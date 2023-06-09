@@ -1,0 +1,8 @@
+1.Changing the App name to Application Information Manager
+2.Introduce the reviews and ratings system
+3.Advanced filtering needs to be done
+4.Licensing and subscription models in database.
+5.User profile with payment gateway.
+6.Try making more interactive user dashboard.
+
+Timeline:[3-4 weeks]
