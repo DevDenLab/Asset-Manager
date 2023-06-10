@@ -32,7 +32,7 @@ class Software(models.Model):
     license = models.CharField(max_length=100)
     subscription = models.BooleanField(default=False)
     tags = models.ManyToManyField("Tag")
-
+    reviews = models.ManyToManyField("Review")
     def __str__(self):
         return self.name
 
