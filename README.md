@@ -18,7 +18,7 @@ Follow the instructions below to get the project up and running on your local ma
   ```
   git clone https://github.com/DevDenLab/Asset-Manager
   ```
-5. Change to the project's directory:
+4. Change to the project's directory:
    ```
    cd Asset-Manager
   ```
