@@ -21,7 +21,8 @@ Follow the instructions below to get the project up and running on your local ma
 4. Change to the project's directory:
    ```
    cd Asset-Manager
-  ```
+ 
+  
 ### Create a Virtual Environment
 1. It's recommended to create a virtual environment to isolate the project's dependencies.
 2. Run the following command to create a virtual environment:
