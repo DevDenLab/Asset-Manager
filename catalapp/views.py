@@ -2,13 +2,16 @@ from django.shortcuts import render
 from .models import Software, Plugin, User,Review
 from django.core.paginator import Paginator
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 def home(request):
     softwares = Software.objects.all()
     paginator = Paginator(softwares, per_page=4)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+    # software = Software.objects.get(id=software_id)
+    # total_views = Software.views.count()
     # context = {"softwares": softwares}
     return render(request, "index.html", {"page_obj": page_obj})
 
@@ -66,12 +69,23 @@ from django.db.models import Avg
 from django.shortcuts import render
 from django.db.models import Count
 from .models import Review
+@login_required
 def softwaredetails(request, software_id):
+    user = request.user
     software = Software.objects.get(id=software_id)
-    avg=Review.objects.aggregate(Avg('rating'))
-    reviews = Review.objects.all()
-    total_reviews = reviews.count()
+    if user in software.views.all():
+        # User has already viewed the software
+        # Handle the logic accordingly
+        pass
+    else:
+        # User is viewing the software for the first time
+        software.views.add(user)
+        software.save()
+        # Increment the views count and perform other operations
+    reviews = Review.objects.filter(software__id=software_id)
+    avg=Review.objects.filter(software__id=software_id).aggregate(Avg('rating'))
 
+    total_reviews = reviews.count()
     # Calculate the count and percentage for each rating category
     rating_counts = reviews.values('rating').annotate(count=Count('rating')).order_by('rating')
     rating_data = []
@@ -140,8 +154,7 @@ def register_view(request):
     return render(request, "register.html")
 
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+
 
 
 @login_required

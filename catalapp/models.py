@@ -24,7 +24,8 @@ class Software(models.Model):
     name = models.CharField(max_length=255)
     images = models.ImageField(upload_to="software_images/")
     time_created = models.DateTimeField(auto_now_add=True)
-    views = models.PositiveIntegerField(default=0)
+    # views = models.PositiveIntegerField(default=0)
+    views = models.ManyToManyField(User, related_name="viewed_software", blank=True)
     information = models.TextField()
     features = models.TextField()
     version = models.CharField(max_length=50)
@@ -66,6 +67,16 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.text)
-#1.average rating with stars(number stars should be highlighted based upon the average rating).
-#2.drop down just beside the average rating
-#3.Drop down menu should show the 5 progress bars out of 100%.You will show the number of 5 stars,4 stars and all stars here.
+#1.average rating with stars(number stars should be highlighted based upon the average rating).Done
+#2.drop down just beside the average rating.Done
+#3.Drop down menu should show the 5 progress bars out of 100%.You will show the number of 5 stars,4 stars and all stars here.Done
+
+
+#Views field per software
+#1.when loggged in user try viewing the software,the views should go +1.
+
+
+#Payment/Add to cart functionality
+#1.the user should be login before clicking on start free trial
+#2.When I click on start free trial,it prompts me to new page where it should give me the 3 portions with the pricing information
+#3.

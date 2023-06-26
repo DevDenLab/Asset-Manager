@@ -36,7 +36,7 @@
         content: '★ ';
     }
 
-     .rate>input:checked~label {
+    .rate>input:checked~label {
         color: #ffc700;
     }
 
@@ -51,7 +51,9 @@
     .rate>input:checked~label:hover~label,
     .rate>label:hover~input:checked~label {
         color: #c59b08;
-    } */
+    }
+
+    */
 
     /* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */
     .fancy-title {
@@ -67,60 +69,63 @@
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
+
     .elegant-dropdown {
-  font-size: 20px;
-  font-weight: bold;
-  background-color: #f8f9fa;
-  border-color: #f8f9fa;
-  color: #333;
-  width: 200px; /* Adjust the width as needed */
-}
+        font-size: 20px;
+        font-weight: bold;
+        background-color: #f8f9fa;
+        border-color: #f8f9fa;
+        color: #333;
+        width: 200px;
+        /* Adjust the width as needed */
+    }
 
-.elegant-dropdown:hover,
-.elegant-dropdown:focus {
-  background-color: #f8f9fa;
-  border-color: #f8f9fa;
-  color: #333;
-}
+    .elegant-dropdown:hover,
+    .elegant-dropdown:focus {
+        background-color: #f8f9fa;
+        border-color: #f8f9fa;
+        color: #333;
+    }
 
-.elegant-dropdown-menu {
-  width: 300px; /* Adjust the width as needed */
-  min-height: 200px; /* Adjust the minimum height as needed */
-  padding: 20px; /* Adjust the padding as needed */
-}
+    .elegant-dropdown-menu {
+        width: 300px;
+        /* Adjust the width as needed */
+        min-height: 200px;
+        /* Adjust the minimum height as needed */
+        padding: 20px;
+        /* Adjust the padding as needed */
+    }
 
-.elegant-progress {
-  height: 20px;
-  margin-bottom: 5px;
-  border-radius: 0;
-}
+    .elegant-progress {
+        height: 20px;
+        margin-bottom: 5px;
+        border-radius: 0;
+    }
 
-.elegant-progress .progress-bar {
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #007bff;
-  color: #fff;
-}
+    .elegant-progress .progress-bar {
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #007bff;
+        color: #fff;
+    }
 
-.elegant-progress .progress-bar::after {
-  content: attr(aria-valuenow) "%";
-  position: absolute;
-  right: 10px;
-}
+    .elegant-progress .progress-bar::after {
+        content: attr(aria-valuenow) "%";
+        position: absolute;
+        right: 10px;
+    }
 
-.elegant-progress .progress-bar::before {
-  content: attr(aria-valuenow);
-  position: absolute;
-  left: 10px;
-}
+    .elegant-progress .progress-bar::before {
+        content: attr(aria-valuenow);
+        position: absolute;
+        left: 10px;
+    }
 
-.dropdown-item h4 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 0;
-}
-
-
+    .dropdown-item h4 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 0;
+    }
 </style>
 
 <div class="row tm-mb-90">
@@ -131,7 +136,17 @@
     </div>
     <div class="col-xl-7 col-lg-7 col-md-8 col-sm-12 order-lg-1">
         <div class="tm-bg-gray tm-video-details rounded-lg shadow-lg">
-            <h1 class="fancy-title">{{ software.name}}</h1>
+            <h1 style="font-family: 'Helvetica', sans-serif;
+            font-size: 37px;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            text-align: center;
+            background-color: #f3e2e2;
+            padding: 20px;
+            margin: 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); font-weight: bold;">{{ software.name}}</h1>
             <hr>
             <h3 class="tm-text-black-dark mb-1" style="font-size: 30px; font-weight: bold;">Details</h3>
             <ul>&#x2022;{{ software.information}}</ul>
@@ -153,6 +168,8 @@
 
                 <span class="badge bg-primary" style="font-size: 15px">Licensed @CUE</span>
             </div>
+            <hr>
+            <h3 class="tm-text-black-dark mb-1" style="font-size: 30px; font-weight: bold;">Subscription</h3>
             <div class="text-center mb-1">
                 <a href="#" class="btn btn-primary tm-btn-big">Start Free trial</a>
             </div>
@@ -172,7 +189,8 @@
             <h3 class="tm-text-black-dark mb-1" style="font-size: 30px; font-weight: bold;">Reviews And Ratings
             </h3>
             {% with rating=ratings.rating__avg %}
-            <label style="font-family: 'Helvetica', sans-serif;font-size: 30px; font-weight: bold;">{{ratings.rating__avg}}</label>
+            <label
+                style="font-family: 'Helvetica', sans-serif;font-size: 30px; font-weight: bold;">{{ratings.rating__avg}}</label>
 
             <div class="rate">
                 <input type="radio" id="star5" name="rate" value="5" {% if rating == 5.0 %}checked{% endif %} />
@@ -187,26 +205,28 @@
                 <label for="star1" title="text">1 star</label>
             </div>
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle elegant-dropdown" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Ratings
+                <button class="btn btn-secondary dropdown-toggle elegant-dropdown" type="button" id="dropdownMenu2"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Ratings
                 </button>
                 <div class="dropdown-menu elegant-dropdown-menu" aria-labelledby="dropdownMenu2">
-                  {% for rating_data in rating_context %}
-                  <div class="dropdown-item">
-                    <h4 class="mb-2">{{ rating_data.rating }} Stars</h4>
-                    <div class="progress elegant-progress">
-                      <div class="progress-bar" role="progressbar" style="width: {{ rating_data.percentage }}%;"></div>
+                    {% for rating_data in rating_context %}
+                    <div class="dropdown-item">
+                        <h4 class="mb-2">{{ rating_data.rating }} Stars</h4>
+                        <div class="progress elegant-progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ rating_data.percentage }}%;">
+                            </div>
+                        </div>
+                        <p class="mb-0">{{ rating_data.count }} Votes ({{ rating_data.percentage|floatformat:2 }}%)</p>
                     </div>
-                    <p class="mb-0">{{ rating_data.count }} Votes ({{ rating_data.percentage|floatformat:2 }}%)</p>
-                  </div>
-                  {% endfor %}
+                    {% endfor %}
                 </div>
-              </div>
-              
-              
-              
-              
-              
+            </div>
+
+
+
+
+
             {% endwith %}
 
 
