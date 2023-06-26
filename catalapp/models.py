@@ -65,4 +65,7 @@ class Review(models.Model):
     rating = models.PositiveIntegerField()
 
     def __str__(self):
-        return str(self.id)
+        return str(self.text)
+#1.average rating with stars(number stars should be highlighted based upon the average rating).
+#2.drop down just beside the average rating
+#3.Drop down menu should show the 5 progress bars out of 100%.You will show the number of 5 stars,4 stars and all stars here.

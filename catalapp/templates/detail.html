@@ -1,0 +1,278 @@
+<!-- {% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
+    data-image-src="img/hero.jpg">
+    <form class="d-flex tm-search-form">
+        <input class="form-control tm-search-input" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success tm-search-btn" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+
+<div class="container-fluid tm-container-content tm-mt-60">
+    <div class="row mb-4">
+        <style>
+            .fancy-title {
+                font-weight: bold;
+                color: #171616;
+                font-size: 44px;
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                /* text-decoration: underline; */
+                /* Add any other desired styles */
+            }
+        </style>
+        <center>
+            <h2 class="fancy-title">{{ software.name}}</h2>
+        </center>
+    </div>
+    <div class="row tm-mb-90">
+        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+            <img src="{{software.images.url}}" style="max-width: 50%; height: auto;" alt="Image" class="img-fluid">
+        </div>
+        <div class="col-xl-5 col-lg-7 col-md-6 col-sm-12">
+            <div class="tm-bg-gray tm-video-details">
+                <p class="mb-4">
+                <h3 class="tm-text-gray-dark mb-3">Info.:</h3>
+                {{ software.information}}
+                </p>
+                <p>
+                <h3 class="tm-text-gray-dark mb-3">Features:</h3>
+                {{ software.features}}
+                </p>
+                <div class="mb-4 d-flex flex-wrap">
+                    <div class="mr-4 mb-2">
+                        <span class="tm-text-gray-dark">Version: </span><span class="tm-text-primary">
+                            {{ software.version}}</span><br>
+                    </div>
+
+                    <div class="mr-4 mb-2">
+                        <span class="tm-text-gray-dark">Supported Systems: </span><span class="tm-text-primary">
+                            {{ software.supported_systems}}</span>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <h3 class="tm-text-gray-dark mb-3">License</h3>
+                    <p>Licensed @CUE <a href="#">(for more information click here)</a></p>
+                </div>
+                <div class="text-center mb-5">
+                    <a href="#" class="btn btn-primary tm-btn-big">Start Free trial</a>
+                </div>
+                <h3 class="tm-text-gray-dark mb-3">Reviews And Ratings</h3>
+                <div class="container-fluid px-1 py-5 mx-auto">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8 col-md-10 col-12 text-center mb-5">
+                            <div class="card">
+                                <div class="row justify-content-left d-flex">
+                                    <div class="col-md-4 d-flex flex-column">
+                                        <div class="rating-box">
+                                            <h1 class="pt-4">4.0</h1>
+                                            <p class="">out of 5</p> -->
+<!-- </div>
+                                        <div> <span class="fa fa-star star-active mx-1"></span> <span
+                                                class="fa fa-star star-active mx-1"></span> <span
+                                                class="fa fa-star star-active mx-1"></span> <span
+                                                class="fa fa-star star-active mx-1"></span> <span
+                                                class="fa fa-star star-inactive mx-1"></span> </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="rating-bar0 justify-content-center">
+                                            <table class="text-left mx-auto">
+                                                <tr>
+                                                    <td class="rating-label">Excellent</td>
+                                                    <td class="rating-bar">
+                                                        <div class="bar-container">
+                                                            <div class="bar-5"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-right">123</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="rating-label">Good</td>
+                                                    <td class="rating-bar">
+                                                        <div class="bar-container">
+                                                            <div class="bar-4"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-right">23</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="rating-label">Average</td>
+                                                    <td class="rating-bar">
+                                                        <div class="bar-container">
+                                                            <div class="bar-3"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-right">10</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="rating-label">Poor</td>
+                                                    <td class="rating-bar">
+                                                        <div class="bar-container">
+                                                            <div class="bar-2"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-right">3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="rating-label">Terrible</td>
+                                                    <td class="rating-bar">
+                                                        <div class="bar-container">
+                                                            <div class="bar-1"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-right">0</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="row d-flex">
+
+                                    <div class="d-flex flex-column">
+                                        <h3 class="mt-2 mb-0">Ratings</h3>
+                                        <div>
+                                            <p class="text-left"><span class="text-muted">4.0</span> <span
+                                                    class="fa fa-star star-active ml-3"></span> <span
+                                                    class="fa fa-star star-active"></span> <span
+                                                    class="fa fa-star star-active"></span> <span
+                                                    class="fa fa-star star-active"></span> <span
+                                                    class="fa fa-star star-inactive"></span></p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="tm-text-gray-dark mb-3">Tags</h3>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">catalog</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">api</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">backend</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">database</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">project management</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">docs management</a>
+                        <a href="#" class="tm-text-primary mr-4 mb-2 d-inline-block">collaboration tool</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <h2 class="col-12 tm-text-primary">
+                Related Softwares
+            </h2>
+        </div>
+        <div class="row mb-3 tm-gallery">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-01.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Hangers</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">16 Oct 2020</span>
+                    <span>12,460 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-02.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Perfumes</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">12 Oct 2020</span>
+                    <span>11,402 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-03.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Clocks</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">8 Oct 2020</span>
+                    <span>9,906 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-04.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Plants</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">6 Oct 2020</span>
+                    <span>16,100 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-05.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Morning</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">26 Sep 2020</span>
+                    <span>16,008 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-06.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Pinky</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">22 Sep 2020</span>
+                    <span>12,860 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-07.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>Bus</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">12 Sep 2020</span>
+                    <span>10,900 views</span>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+                <figure class="effect-ming tm-video-item">
+                    <img src="img/img-08.jpg" alt="Image" class="img-fluid">
+                    <figcaption class="d-flex align-items-center justify-content-center">
+                        <h2>New York</h2>
+                        <a href="#">View more</a>
+                    </figcaption>
+                </figure>
+                <div class="d-flex justify-content-between tm-text-gray">
+                    <span class="tm-text-gray-light">4 Sep 2020</span>
+                    <span>11,300 views</span>
+                </div>
+            </div>
+        </div> <!-- row -->
+<!-- </div> <!-- container-fluid, tm-container-content -->
+<!-- {% endblock %} --> --> -->

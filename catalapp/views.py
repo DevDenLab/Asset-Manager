@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Software, Plugin, User
+from .models import Software, Plugin, User,Review
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
@@ -62,10 +62,30 @@ def search_api(request):
 
     return JsonResponse(response)
 
-
+from django.db.models import Avg
+from django.shortcuts import render
+from django.db.models import Count
+from .models import Review
 def softwaredetails(request, software_id):
     software = Software.objects.get(id=software_id)
-    return render(request, "softwaredetails.html", context={"software": software})
+    avg=Review.objects.aggregate(Avg('rating'))
+    reviews = Review.objects.all()
+    total_reviews = reviews.count()
+
+    # Calculate the count and percentage for each rating category
+    rating_counts = reviews.values('rating').annotate(count=Count('rating')).order_by('rating')
+    rating_data = []
+    for rating_count in rating_counts:
+        rating_percentage = (rating_count['count'] / total_reviews) * 100
+        rating_data.append({
+            'rating': rating_count['rating'],
+            'count': rating_count['count'],
+            'percentage': rating_percentage,
+        })
+
+   
+    print(rating_data)
+    return render(request, "softwaredetails.html", context={"software": software,"ratings":avg,"rating_context":rating_data})
 
 
 def plugins(request):

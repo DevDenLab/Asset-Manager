@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Software Catalog</title>
+    <title>Application Information Manager</title>
 
     <!-- <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="fontawesome/css/all.min.css">
@@ -13,6 +13,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'catalapp/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'catalapp/css/templatemo-style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'catalapp/fontawesome/css/all.min.css' %}">
+
+    <script src="{% static 'catalapp/js/bootstrap.min.js' %}"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
     <!--
     
 TemplateMo 556 Catalog-Z
@@ -33,7 +37,7 @@ https://templatemo.com/tm-556-catalog-z
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'catalapp:home' %}">
                 <i class="fas fa-film mr-2"></i>
-                Software Catalog
+                Application Information Manager
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +76,7 @@ https://templatemo.com/tm-556-catalog-z
 
     {% block content %}
     {% endblock %}
+    {% block footer %}
     <footer class="tm-bg-gray pt-5 pb-3 tm-text-gray tm-footer">
         <div class="container-fluid tm-container-small">
             <div class="row">
@@ -112,7 +117,7 @@ https://templatemo.com/tm-556-catalog-z
             </div>
         </div>
     </footer>
-
+    {% endblock %}
     <script src="{% static 'catalapp/js/plugins.js' %}"></script>
     <script>
         $(window).on("load", function () {
