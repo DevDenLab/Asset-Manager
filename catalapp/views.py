@@ -33,11 +33,11 @@ from django.http import JsonResponse
 def search_api(request):
     query = request.GET.get("q")
     softwares = Software.objects.all()
-
+    
     if query:
-        softwares = softwares.filter(tags__name__icontains=query)
-
-    paginator = Paginator(softwares, per_page=1)
+        softwares = softwares.filter(tags__name__icontains=query).distinct()
+        # print(softwares)
+    paginator = Paginator(softwares, per_page=4)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 

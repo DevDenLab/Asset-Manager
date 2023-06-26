@@ -31,7 +31,7 @@
                 </figcaption>
             </figure>
             <div class="d-flex justify-content-between tm-text-gray">
-                <span class="tm-text-gray-light">{{ item.date }}</span>
+                <span class="tm-text-gray-light">{{ item.time_created }}</span>
                 <span>{{ item.views.all.count }} views</span>
             </div>
         </div>
@@ -41,26 +41,10 @@
 
 
 </div> <!-- row -->
-<!-- <div id="paginationContainer" class="row tm-mb-90">
-    <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
-        <a href="#" id="prevPageLink" class="btn btn-primary tm-btn-prev mb-2">Previous</a>
 
-        <div class="tm-paging d-flex" id="pageLinksContainer">
-            {% for num in page_obj.paginator.page_range %}
-            {% if num == page_obj.number %}
-            <a href="javascript:void(0);" class="active tm-paging-link">{{ num }}</a>
-            {% else %}
-            <a href="#" class="tm-paging-link pageLink">{{ num }}</a>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-        <a href="#" id="nextPageLink" class="btn btn-primary tm-btn-next">Next Page</a>
-    </div>
-</div> -->
 <div id="paginationContainer" class="row tm-mb-90">
     <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col" id="pagination">
-        {% if page_obj.has_previous %}
+        {% if page_obj.has_previous and search_query %}
         <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2">Previous</a>
         {% else %}
         <a href="javascript:void(0);" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
@@ -76,7 +60,7 @@
             {% endfor %}
         </div>
 
-        {% if page_obj.has_next %}
+        {% if page_obj.has_next and search_query %}
         <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
         {% else %}
         <a href="javascript:void(0);" class="btn btn-primary tm-btn-next disabled">Next Page</a>
@@ -84,180 +68,35 @@
     </div>
 </div>
 
-<!-- <div id="paginationContainer" class="row tm-mb-90">
-    <div class="col-12 d-flex justify-content-between align-items-center tm-paging-col">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary tm-btn-prev mb-2">Previous</a>
-        {% else %}
-        <a href="javascript:void(0);" class="btn btn-primary tm-btn-prev mb-2 disabled">Previous</a>
-        {% endif %}
 
-        <div class="tm-paging d-flex">
-            {% for num in page_obj.paginator.page_range %}
-            {% if num == page_obj.number %}
-            <a href="javascript:void(0);" class="active tm-paging-link">{{ num }}</a>
-            {% else %}
-            <a href="?page={{ num }}" class="tm-paging-link">{{ num }}</a>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary tm-btn-next">Next Page</a>
-        {% else %}
-        <a href="javascript:void(0);" class="btn btn-primary tm-btn-next disabled">Next Page</a>
-        {% endif %}
-    </div>
-</div> -->
 
 </div> <!-- container-fluid, tm-container-content -->
 <script>
-    document.getElementById('search-form').addEventListener('click', function (event) {
+    document.getElementById('search-form').addEventListener('submit', function (event) {
         event.preventDefault();
-        var searchQuery = document.getElementById('search-button').value;
+        var searchQuery = document.getElementById('search-button').value.trim();
 
-        // Check if search query is empty
-        if (searchQuery.trim() === '') {
-            // Make an AJAX request to the home API
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/catalog/api/search/');
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    var html = response.html;
-                    var pagination = response.pagination;
+        // Make an AJAX request to the search API
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/catalog/api/search/?q=' + encodeURIComponent(searchQuery));
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var html = response.html;
 
+                if (searchQuery === '') {
+                    // Show all software items if search query is empty
                     document.getElementById('software-gallery-container').innerHTML = html;
-
-                    if (pagination) {
-                        var paginationLinks = '';
-                        if (pagination.has_previous) {
-                            paginationLinks += '<a href="?page=' + pagination.previous_page_number + '">Previous</a>';
-                        }
-                        for (var i = 0; i < pagination.page_range.length; i++) {
-                            if (pagination.page_range[i] === pagination.current_page_number) {
-                                paginationLinks += '<span class="active">' + pagination.page_range[i] + '</span>';
-                            } else {
-                                paginationLinks += '<a href="?page=' + pagination.page_range[i] + '">' + pagination.page_range[i] + '</a>';
-                            }
-                        }
-                        if (pagination.has_next) {
-                            paginationLinks += '<a href="?page=' + pagination.next_page_number + '">Next Page</a>';
-                        } else {
-                            paginationLinks += '<a href="javascript:void(0);" class="disabled">Next Page</a>';
-                        }
-
-                        document.getElementById('paginationLinks').innerHTML = paginationLinks;
-
-                        // Disable pagination links if there are no more pages
-                        if (!pagination.has_next) {
-                            var nextLink = document.querySelector('.tm-btn-next');
-                            nextLink.classList.add('disabled');
-                            nextLink.removeAttribute('href');
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        } else {
-            // Make an AJAX request to the search API
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/catalog/api/search/?q=' + encodeURIComponent(searchQuery));
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    var html = response.html;
-                    var pagination = response.pagination;
-
+                    document.getElementById('paginationContainer').style.display = 'block';
+                } else {
+                    // Show search query results and hide navigation
                     document.getElementById('software-gallery-container').innerHTML = html;
-
-                    if (pagination) {
-                        var paginationLinks = '';
-                        if (pagination.has_previous) {
-                            paginationLinks += '<a href="?page=' + pagination.previous_page_number + '">Previous</a>';
-                        }
-                        for (var i = 0; i < pagination.page_range.length; i++) {
-                            if (pagination.page_range[i] === pagination.current_page_number) {
-                                paginationLinks += '<span class="active">' + pagination.page_range[i] + '</span>';
-                            } else {
-                                paginationLinks += '<a href="?page=' + pagination.page_range[i] + '">' + pagination.page_range[i] + '</a>';
-                            }
-                        }
-                        if (pagination.has_next) {
-                            paginationLinks += '<a href="?page=' + pagination.next_page_number + '">Next Page</a>';
-                        } else {
-                            paginationLinks += '<a href="javascript:void(0);" class="disabled">Next Page</a>';
-                        }
-
-                        document.getElementById('paginationLinks').innerHTML = paginationLinks;
-
-                        // Disable pagination links if there are no more pages
-                        if (!pagination.has_next) {
-                            var nextLink = document.querySelector('.tm-btn-next');
-                            nextLink.classList.add('disabled');
-                            nextLink.removeAttribute('href');
-                        }
-                    }
+                    document.getElementById('paginationContainer').style.display = 'none';
                 }
-            };
-            xhr.send();
-        }
+            }
+        };
+        xhr.send();
     });
-
-
-
-    // document.getElementById('search-form').addEventListener('click', function (event) {
-    //     event.preventDefault();
-    //     var searchQuery = document.getElementById('search-button').value;
-
-    //     // Make an AJAX request to the search API
-    //     var xhr = new XMLHttpRequest();
-    //     xhr.open('GET', '/catalog/api/search/?q=' + encodeURIComponent(searchQuery));
-    //     xhr.onload = function () {
-    //         if (xhr.status === 200) {
-    //             var response = JSON.parse(xhr.responseText);
-    //             var html = response.html;
-    //             var pagination = response.pagination;
-
-    //             document.getElementById('software-gallery-container').innerHTML = html;
-
-    //             if (pagination) {
-    //                 if (pagination.has_previous) {
-    //                     document.getElementById('prevPageLink').href = '?page=' + pagination.previous_page_number;
-    //                     document.getElementById('prevPageLink').classList.remove('disabled');
-    //                 } else {
-    //                     document.getElementById('prevPageLink').href = 'javascript:void(0);';
-    //                     document.getElementById('prevPageLink').classList.add('disabled');
-    //                 }
-
-    //                 if (pagination.has_next) {
-    //                     document.getElementById('nextPageLink').href = '?page=' + pagination.next_page_number;
-    //                     document.getElementById('nextPageLink').classList.remove('disabled');
-    //                 } else {
-    //                     document.getElementById('nextPageLink').href = 'javascript:void(0);';
-    //                     document.getElementById('nextPageLink').classList.add('disabled');
-    //                 }
-
-    //                 var pagingLinks = document.getElementsByClassName('pagingLink');
-    //                 for (var i = 0; i < pagingLinks.length; i++) {
-    //                     var pageLink = pagingLinks[i];
-    //                     var pageNumber = pageLink.getAttribute('data-page');
-    //                     if (pageNumber == pagination.current_page_number) {
-    //                         pageLink.classList.add('active');
-    //                     } else {
-    //                         pageLink.classList.remove('active');
-    //                         pageLink.href = '?page=' + pageNumber;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     };
-    //     xhr.send();
-    // });
-
-
-
-
 
 </script>
 {% endblock %}

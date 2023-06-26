@@ -73,7 +73,12 @@ class Review(models.Model):
 
 
 #Views field per software
-#1.when loggged in user try viewing the software,the views should go +1.
+#1.when loggged in user try viewing the software,the views should go +1.Done
+
+#Seach_functionality_fix
+#1.when there is no input in the search field and if search is requested then the system should show 4 random softwares on the same screen as index.html.Done
+#2.when serach is activated,during that pagination should be deactivated.Done
+
 
 
 #Payment/Add to cart functionality
