@@ -98,8 +98,9 @@ def softwaredetails(request, software_id):
         })
 
    
-    print(rating_data)
-    return render(request, "softwaredetails.html", context={"software": software,"ratings":avg,"rating_context":rating_data})
+    related_software = get_related_software(software_id)
+    print(related_software)
+    return render(request, "softwaredetails.html", context={"software": software,"related":related_software,"ratings":avg,"rating_context":rating_data})
 
 
 def plugins(request):
@@ -161,3 +162,21 @@ def register_view(request):
 def profile_view(request):
     user = request.user
     return render(request, "profile.html", {"user": user})
+
+
+from django.db.models import Count
+
+def get_related_software(current_software_id, num_recommendations=4):
+    # Get the current software
+    current_software = Software.objects.get(id=current_software_id)
+
+    # Get the users who viewed the current software
+    users_viewed_current_software = current_software.views.all()
+
+    # Get the related software viewed by those users and annotate with the count of views
+    related_software = Software.objects.filter(views__in=users_viewed_current_software)\
+                                       .exclude(id=current_software_id)\
+                                       .annotate(view_count=Count('views'))\
+                                       .order_by('-view_count')[:num_recommendations]
+
+    return related_software

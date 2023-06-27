@@ -34,6 +34,16 @@ class Software(models.Model):
     subscription = models.BooleanField(default=False)
     tags = models.ManyToManyField("Tag")
     reviews = models.ManyToManyField("Review")
+    price = models.PositiveIntegerField(default=100)
+    release_date = models.DateField(default='2023-02-02')
+    developer = models.CharField(max_length=255,default="")
+    download_link = models.URLField(default="")
+    is_featured = models.BooleanField(default=False)
+    is_popular = models.BooleanField(default=False)
+    is_new_release = models.BooleanField(default=False)
+    demo_available = models.BooleanField(default=False)
+    documentation_link = models.URLField(default="")
+    video_link = models.URLField(default="")
     def __str__(self):
         return self.name
 
