@@ -77,6 +77,19 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.text)
+    
+from django.db import models
+
+class Subscription(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    duration = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    # Add any additional fields related to the user profile
+
 #1.average rating with stars(number stars should be highlighted based upon the average rating).Done
 #2.drop down just beside the average rating.Done
 #3.Drop down menu should show the 5 progress bars out of 100%.You will show the number of 5 stars,4 stars and all stars here.Done

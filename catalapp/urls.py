@@ -22,4 +22,8 @@ urlpatterns = [
         name="logout",
     ),
     path("profile/", views.profile_view, name="profile"),
+    path('subscription/', views.subscription_view, name='subscription'),
+    path('subscription/create/', views.create_subscription, name='create_subscription'),
+    path('success/', views.success_view, name='success'),
+    path('payment/', views.payment_view, name='payment'),
 ]

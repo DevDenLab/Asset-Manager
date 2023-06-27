@@ -180,3 +180,101 @@ def get_related_software(current_software_id, num_recommendations=4):
                                        .order_by('-view_count')[:num_recommendations]
 
     return related_software
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import Subscription
+import stripe
+
+def subscription_view(request):
+    subscriptions = Subscription.objects.all()
+    
+    context = {
+        'subscriptions': subscriptions
+    }
+    return render(request, 'subscription.html', context)
+
+
+from django.conf import settings
+def create_subscription(request):
+    if request.method == 'POST':
+        subscription_id = request.POST.get('subscription')
+        subscription = Subscription.objects.get(id=subscription_id)
+
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        # Create a customer in Stripe
+        customer = stripe.Customer.create(
+            email=request.user.email,
+        )
+        # Create a subscription in Stripe
+        stripe.Subscription.create(
+            customer=customer.id,
+            items=[
+                {
+                    'price': "price_1NNRD5FQ7fQ9eiOGo4J7N9uZ",
+                },
+            ],
+            trial_period_days=14,  # Set the trial period duration in days
+        )
+        # Save the subscription details in your database
+        # You can associate the subscription with the user who initiated the subscription
+
+        return redirect('catalapp:success')
+from django.shortcuts import render
+
+def success_view(request):
+    return render(request, 'success.html')
+from django.shortcuts import render
+from django.conf import settings
+import stripe
+
+def payment_view(request):
+    if request.method == 'POST':
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        # Create a customer in Stripe
+        customer = stripe.Customer.create(
+            email=request.user.email,
+        )
+        # Create a payment method using the card element
+        payment_method = stripe.PaymentMethod.create(
+            type='card',
+            card={
+                'number': request.POST['card_number'],
+                'exp_month': request.POST['exp_month'],
+                'exp_year': request.POST['exp_year'],
+                'cvc': request.POST['cvc'],
+            },
+        )
+        # Attach the payment method to the customer
+        stripe.PaymentMethod.attach(
+            payment_method.id,
+            customer=customer.id,
+        )
+        # Set the default payment method for the customer
+        stripe.Customer.modify(
+            customer.id,
+            invoice_settings={
+                'default_payment_method': payment_method.id,
+            },
+        )
+        # Create a subscription in Stripe
+        stripe.Subscription.create(
+            customer=customer.id,
+            items=[
+                {
+                    'price': 'your_stripe_price_id',
+                },
+            ],
+            trial_period_days=14,  # Set the trial period duration in days
+        )
+        # Save the subscription details in your database
+        # You can associate the subscription with the user who initiated the subscription
+
+        return redirect('success')
+    else:
+        return render(request, 'payment.html')
+from django.shortcuts import redirect, render
+
+

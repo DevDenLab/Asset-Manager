@@ -1,0 +1,12 @@
+<!-- subscription_options.html -->
+
+<h2>Choose a subscription option:</h2>
+
+<form method="POST" action="{% url 'catalapp:payment' %}">
+    {% csrf_token %}
+    <input type="radio" name="subscription_option" value="option1"> Free<br>
+    <input type="radio" name="subscription_option" value="option2"> Standard<br>
+    <input type="radio" name="subscription_option" value="option3"> Premium<br>
+    <br>
+    <button type="submit">Start Free Trial</button>
+</form>
