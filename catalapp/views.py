@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Software, Plugin, User,Review
+from .models import Software, Plugin, User,Review,Payment
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -188,93 +188,216 @@ from django.shortcuts import render, redirect
 from .models import Subscription
 import stripe
 
-def subscription_view(request):
+def subscription_view(request,software_id):
     subscriptions = Subscription.objects.all()
-    
+    soft_id= Software.objects.get(id=software_id)
     context = {
-        'subscriptions': subscriptions
+        'subscriptions': subscriptions,
+        "software":soft_id
     }
     return render(request, 'subscription.html', context)
 
 
-from django.conf import settings
-def create_subscription(request):
-    if request.method == 'POST':
-        subscription_id = request.POST.get('subscription')
-        subscription = Subscription.objects.get(id=subscription_id)
 
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        # Create a customer in Stripe
-        customer = stripe.Customer.create(
-            email=request.user.email,
-        )
-        # Create a subscription in Stripe
-        stripe.Subscription.create(
-            customer=customer.id,
-            items=[
-                {
-                    'price': "price_1NNRD5FQ7fQ9eiOGo4J7N9uZ",
-                },
-            ],
-            trial_period_days=14,  # Set the trial period duration in days
-        )
-        # Save the subscription details in your database
-        # You can associate the subscription with the user who initiated the subscription
+# from django.conf import settings
+# def create_subscription(request):
+#     if request.method == 'POST':
+#         subscription_id = request.POST.get('subscription')
+#         subscription = Subscription.objects.get(id=subscription_id)
 
-        return redirect('catalapp:success')
+#         stripe.api_key = settings.STRIPE_SECRET_KEY
+#         # Create a customer in Stripe
+#         customer = stripe.Customer.create(
+#             email=request.user.email,
+#         )
+#         # Create a subscription in Stripe
+#         stripe.Subscription.create(
+#             customer=customer.id,
+#             items=[
+#                 {
+#                     'price': "price_1NNRD5FQ7fQ9eiOGo4J7N9uZ",
+#                 },
+#             ],
+#             trial_period_days=14,  # Set the trial period duration in days
+#         )
+#         # Save the subscription details in your database
+#         # You can associate the subscription with the user who initiated the subscription
+
+#         return redirect('catalapp:success')
 from django.shortcuts import render
 
 def success_view(request):
     return render(request, 'success.html')
-from django.shortcuts import render
-from django.conf import settings
+# from django.shortcuts import render
+# from django.conf import settings
+# import stripe
+
+# def payment_view(request):
+#     if request.method == 'POST':
+#         stripe.api_key = settings.STRIPE_SECRET_KEY
+#         # Create a customer in Stripe
+#         customer = stripe.Customer.create(
+#             email=request.user.email,
+#         )
+#         # Create a payment method using the card element
+#         payment_method = stripe.PaymentMethod.create(
+#             type='card',
+#             card={
+#                 'number': request.POST['card_number'],
+#                 'exp_month': request.POST['exp_month'],
+#                 'exp_year': request.POST['exp_year'],
+#                 'cvc': request.POST['cvc'],
+#             },
+#         )
+#         # Attach the payment method to the customer
+#         stripe.PaymentMethod.attach(
+#             payment_method.id,
+#             customer=customer.id,
+#         )
+#         # Set the default payment method for the customer
+#         stripe.Customer.modify(
+#             customer.id,
+#             invoice_settings={
+#                 'default_payment_method': payment_method.id,
+#             },
+#         )
+#         # Create a subscription in Stripe
+#         stripe.Subscription.create(
+#             customer=customer.id,
+#             items=[
+#                 {
+#                     'price': 'your_stripe_price_id',
+#                 },
+#             ],
+#             trial_period_days=14,  # Set the trial period duration in days
+#         )
+#         # Save the subscription details in your database
+#         # You can associate the subscription with the user who initiated the subscription
+
+#         return redirect('success')
+#     else:
+#         return render(request, 'payment.html')
+
+
 import stripe
+from django.contrib.auth.models import User
+from .models import Software, Subscription
 
-def payment_view(request):
-    if request.method == 'POST':
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        # Create a customer in Stripe
-        customer = stripe.Customer.create(
-            email=request.user.email,
+def retrieve_payment_information(event):
+    session = event.data.object
+    session = event.data.object
+    client_reference_id = session.get('client_reference_id')
+    software = Software.objects.get(id=client_reference_id)
+    return software
+
+def retrieve_user_information(event):
+    session = event.data.object
+    customer_mail = session.billing_details.email
+    user = User.objects.get(email=customer_mail)
+    subscription = None
+
+    if session.amount==100:
+        subscription = Subscription.objects.get(id=4)
+        # software = subscription.software
+    elif session.amount==5000:
+        subscription = Subscription.objects.get(id=5)
+        # software = subscription.software
+    elif session.amount==8000:
+        subscription = Subscription.objects.get(id=6)
+        # software = subscription.software
+    elif session.amount==10000:
+        subscription = Subscription.objects.get(id=6)
+        # software = subscription.software
+    # Retrieve payment amount
+    amount = session.amount
+    return user,subscription, amount
+    
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import stripe
+import json
+user = None
+software = None
+subscription = None
+amount = None
+@csrf_exempt
+def webhook(request):
+    global user, software, subscription, amount
+    payload = request.body
+    event = None
+    software,user,subscription, amount=False,False,False,False
+    try:
+        event = stripe.Event.construct_from(
+            json.loads(payload), stripe.api_key
         )
-        # Create a payment method using the card element
-        payment_method = stripe.PaymentMethod.create(
-            type='card',
-            card={
-                'number': request.POST['card_number'],
-                'exp_month': request.POST['exp_month'],
-                'exp_year': request.POST['exp_year'],
-                'cvc': request.POST['cvc'],
-            },
-        )
-        # Attach the payment method to the customer
-        stripe.PaymentMethod.attach(
-            payment_method.id,
-            customer=customer.id,
-        )
-        # Set the default payment method for the customer
-        stripe.Customer.modify(
-            customer.id,
-            invoice_settings={
-                'default_payment_method': payment_method.id,
-            },
-        )
-        # Create a subscription in Stripe
-        stripe.Subscription.create(
-            customer=customer.id,
-            items=[
-                {
-                    'price': 'your_stripe_price_id',
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    
+    # Handle specific event types
+    if event.type == 'checkout.session.completed':
+        # Retrieve the relevant information for the payment
+        software = retrieve_payment_information(event)
+
+    if event.type == 'charge.succeeded':
+        user,subscription, amount=retrieve_user_information(event)
+        # Create a new Payment object and save it to the database
+
+    if user and software and subscription and amount:
+        print("payment should be created now!!!")
+                
+        payment = Payment(
+                    user=user,
+                    software=software,
+                    subscription=subscription,
+                    amount=amount,
+                    is_successful=True
+                )
+        payment.save()
+        return HttpResponse(status=200)
+
+        # Update user's subscription status, if applicable
+            # user.subscription = subscription
+            # user.save()
+
+        # Additional actions (e.g., send confirmation email, update inventory, etc.)
+        # ...
+    return HttpResponse(status=500)
+
+    
+import stripe
+from django.contrib.auth.models import User
+from .models import Software, Subscription
+
+def create_payment_link(user, software):
+    stripe.api_key = "sk_test_51NNQNSFQ7fQ9eiOGNU27BidquzSvmBAC4FztWt8jroHqHQ2QyTwCx7BBpjksldu7ZBnxRazcOWCVVcOZExG0Ajvt00rmvFR3A5"
+    payment_session = stripe.checkout.Session.create(
+        customer="cus_OANDy4jNYPGat0",
+        payment_method_types=['card'],
+        line_items=[
+            {
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': software.price * 100,  # Price in cents
+                    'product_data': {
+                        'name': software.name,
+                        # 'images': [software.images.url],
+                    },
                 },
-            ],
-            trial_period_days=14,  # Set the trial period duration in days
-        )
-        # Save the subscription details in your database
-        # You can associate the subscription with the user who initiated the subscription
+                'quantity': 1,
+            }
+        ],
+        mode='payment',
+        success_url='http://192.168.1.79/catalog/profile/',  # Replace with your success URL
+        # cancel_url='https://example.com/cancel',  # Replace with your cancel URL
+        client_reference_id=str(software.id),  # Pass software ID as the client reference ID
+    )
 
-        return redirect('success')
-    else:
-        return render(request, 'payment.html')
-from django.shortcuts import redirect, render
+    return payment_session.url
 
-
+# Example usage when redirecting user to the payment link
+def redirect_to_payment(request, software_id):
+    user = request.user
+    software = Software.objects.get(id=software_id)
+    payment_link = create_payment_link(user, software)
+    return redirect(payment_link)

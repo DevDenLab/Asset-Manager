@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
-
+from django.views.decorators.csrf import csrf_exempt
 app_name = "catalapp"
 urlpatterns = [
     path("home/", views.home, name="home"),
@@ -21,9 +21,17 @@ urlpatterns = [
         auth_views.LogoutView.as_view(next_page=reverse_lazy("catalapp:home")),
         name="logout",
     ),
-    path("profile/", views.profile_view, name="profile"),
-    path('subscription/', views.subscription_view, name='subscription'),
-    path('subscription/create/', views.create_subscription, name='create_subscription'),
+    path('subscription/<int:software_id>/', views.subscription_view, name='subscription'),#done
+
+    path("profile/", views.profile_view, name="profile"),#??
+#     path('subscription/create/', views.create_subscription, name='create_subscription'),
     path('success/', views.success_view, name='success'),
-    path('payment/', views.payment_view, name='payment'),
+    path('stripe_webhook/', csrf_exempt(views.webhook), name='stripe_webhook'),
+    path('payment/redirect/<int:software_id>/', views.redirect_to_payment, name='redirect_to_payment'),
+#     path('payment/', views.payment_view, name='payment'),
 ]
+#1.there should be a way when user completes the transaction via stripe,it should reflect back to 
+#the database that as a record that this user has made purchase for this software and 
+#2.user should be redirected back to the
+#user dashboard where he has access to the application for download 
+#3.user dashboard creation needs to be done.

@@ -78,17 +78,30 @@ class Review(models.Model):
     def __str__(self):
         return str(self.text)
     
-from django.db import models
 
 class Subscription(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     duration = models.CharField(max_length=50)
-
+    stripe_product_id = models.CharField(max_length=255,default="prod_O9kr4qTmAQ036l")
+    is_popular=models.BooleanField(default=False)
     def __str__(self):
         return self.name
+    
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    software = models.ForeignKey(Software, on_delete=models.CASCADE)
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
+    payment_date = models.DateTimeField(auto_now_add=True)
+    is_successful = models.BooleanField(default=False)
 
-    # Add any additional fields related to the user profile
+    def __str__(self):
+        return f"{self.user} - {self.software}-{self.subscription}"
+
+
+
+
 
 #1.average rating with stars(number stars should be highlighted based upon the average rating).Done
 #2.drop down just beside the average rating.Done
