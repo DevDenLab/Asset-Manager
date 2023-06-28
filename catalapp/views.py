@@ -284,13 +284,19 @@ from django.contrib.auth.models import User
 from .models import Software, Subscription
 
 def retrieve_payment_information(event):
+    # global user, software, subscription, amount
     session = event.data.object
     session = event.data.object
     client_reference_id = session.get('client_reference_id')
     software = Software.objects.get(id=client_reference_id)
-    return software
+    # print(software.name)
+    metadata = event.data.object.metadata
+    subscription_type = metadata.get('subscription_type')
+    sub_id=Subscription.objects.get(name=subscription_type)
+    return software,sub_id
 
 def retrieve_user_information(event):
+    # global user, software, subscription, amount
     session = event.data.object
     customer_mail = session.billing_details.email
     user = User.objects.get(email=customer_mail)
@@ -310,7 +316,7 @@ def retrieve_user_information(event):
         # software = subscription.software
     # Retrieve payment amount
     amount = session.amount
-    return user,subscription, amount
+    return user,amount
     
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -325,7 +331,7 @@ def webhook(request):
     global user, software, subscription, amount
     payload = request.body
     event = None
-    software,user,subscription, amount=False,False,False,False
+    # software,user,subscription, amount=False,False,False,False
     try:
         event = stripe.Event.construct_from(
             json.loads(payload), stripe.api_key
@@ -337,15 +343,18 @@ def webhook(request):
     # Handle specific event types
     if event.type == 'checkout.session.completed':
         # Retrieve the relevant information for the payment
-        software = retrieve_payment_information(event)
+        print(event.type)
+        software,subscription= retrieve_payment_information(event)
 
     if event.type == 'charge.succeeded':
-        user,subscription, amount=retrieve_user_information(event)
+        print(event.type)
+        user, amount=retrieve_user_information(event)
         # Create a new Payment object and save it to the database
-
-    if user and software and subscription and amount:
+    import time
+    
+    if user is not None and software is not None and subscription is not None and amount is not None:
         print("payment should be created now!!!")
-                
+        print(user,software)           
         payment = Payment(
                     user=user,
                     software=software,
@@ -362,14 +371,14 @@ def webhook(request):
 
         # Additional actions (e.g., send confirmation email, update inventory, etc.)
         # ...
-    return HttpResponse(status=500)
+    return HttpResponse("Not all info")
 
     
 import stripe
 from django.contrib.auth.models import User
 from .models import Software, Subscription
 
-def create_payment_link(user, software):
+def create_payment_link(user, software,subscription):
     stripe.api_key = "sk_test_51NNQNSFQ7fQ9eiOGNU27BidquzSvmBAC4FztWt8jroHqHQ2QyTwCx7BBpjksldu7ZBnxRazcOWCVVcOZExG0Ajvt00rmvFR3A5"
     payment_session = stripe.checkout.Session.create(
         customer="cus_OANDy4jNYPGat0",
@@ -391,13 +400,17 @@ def create_payment_link(user, software):
         success_url='http://192.168.1.79/catalog/profile/',  # Replace with your success URL
         # cancel_url='https://example.com/cancel',  # Replace with your cancel URL
         client_reference_id=str(software.id),  # Pass software ID as the client reference ID
+        # subscription_data=str(subscription)
+        metadata={
+            'subscription_type': subscription  # Include the subscription type in the metadata
+        }
     )
 
     return payment_session.url
 
 # Example usage when redirecting user to the payment link
-def redirect_to_payment(request, software_id):
+def redirect_to_payment(request, software_id,subscription):
     user = request.user
     software = Software.objects.get(id=software_id)
-    payment_link = create_payment_link(user, software)
+    payment_link = create_payment_link(user, software,subscription)
     return redirect(payment_link)
