@@ -2,12 +2,38 @@
 {% load static %}
 
 {% block content %}
-<div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
+<!-- <div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
     data-image-src="{% static 'catalapp/images/hero.jpg' %}">
     <form id="search-form" class="d-flex tm-search-form" action="{% url 'catalapp:search_api' %}" method="get">
         <input id="search-button" class="form-control tm-search-input" type="search" name="q" placeholder="Search"
             aria-label="Search">
         <button class="btn btn-outline-success tm-search-btn" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div> -->
+<div class="tm-hero d-flex justify-content-center align-items-center" data-parallax="scroll"
+    data-image-src="{% static 'catalapp/images/hero.jpg' %}">
+    <form id="search-form" class="d-flex tm-search-form" action="{% url 'catalapp:search_api' %}" method="get">
+        <input id="search-button" class="form-control tm-search-input" type="search" name="q" placeholder="Search"
+            aria-label="Search">
+
+        <!-- Additional search options -->
+        <select name="subscription" id="subscription-select">
+            <option value="">All Subscriptions</option>
+            <option value="true">Subscription Available</option>
+            <option value="false">No Subscription</option>
+        </select>
+
+        <select name="license" id="license-select">
+            <option value="">All Licenses</option>
+            <option value="Open Source">Open Source</option>
+            <option value="Commercial">Commercial</option>
+        </select>
+
+        <!-- Add more search options as needed -->
+
+        <button id="search-button" class="btn btn-outline-success tm-search-btn" type="submit">
             <i class="fas fa-search"></i>
         </button>
     </form>
@@ -75,17 +101,26 @@
     document.getElementById('search-form').addEventListener('submit', function (event) {
         event.preventDefault();
         var searchQuery = document.getElementById('search-button').value.trim();
+        var subscription = document.getElementById('subscription-select').value;
+        var license = document.getElementById('license-select').value;
 
         // Make an AJAX request to the search API
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/catalog/api/search/?q=' + encodeURIComponent(searchQuery));
+        var url = '/catalog/api/search/?q=' + encodeURIComponent(searchQuery);
+        if (subscription) {
+            url += '&subscription=' + encodeURIComponent(subscription);
+        }
+        if (license) {
+            url += '&license=' + encodeURIComponent(license);
+        }
+        xhr.open('GET', url);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 var html = response.html;
 
-                if (searchQuery === '') {
-                    // Show all software items if search query is empty
+                if (searchQuery === '' && !subscription && !license) {
+                    // Show all software items if search query, subscription, and license are empty
                     document.getElementById('software-gallery-container').innerHTML = html;
                     document.getElementById('paginationContainer').style.display = 'block';
                 } else {
@@ -97,6 +132,5 @@
         };
         xhr.send();
     });
-
 </script>
 {% endblock %}

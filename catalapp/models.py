@@ -19,6 +19,16 @@ from django.contrib.auth.models import User
 #         verbose_name = "user"
 #         verbose_name_plural = "users"
 
+class Subscription(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.PositiveIntegerField()
+    # price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    duration = models.CharField(max_length=50)
+    stripe_product_id = models.CharField(max_length=255,default="prod_O9kr4qTmAQ036l")
+    is_popular=models.BooleanField(default=False)
+    def __str__(self):
+        return self.name
 
 class Software(models.Model):
     name = models.CharField(max_length=255)
@@ -31,7 +41,8 @@ class Software(models.Model):
     version = models.CharField(max_length=50)
     supported_systems = models.CharField(max_length=255)
     license = models.CharField(max_length=100)
-    subscription = models.BooleanField(default=False)
+    # subscription = models.BooleanField(default=False)
+    subscription = models.ManyToManyField(Subscription, default=4)
     tags = models.ManyToManyField("Tag")
     reviews = models.ManyToManyField("Review")
     price = models.PositiveIntegerField(default=100)
@@ -44,6 +55,7 @@ class Software(models.Model):
     demo_available = models.BooleanField(default=False)
     documentation_link = models.URLField(default="")
     video_link = models.URLField(default="")
+
     def __str__(self):
         return self.name
 
@@ -79,16 +91,6 @@ class Review(models.Model):
         return str(self.text)
     
 
-class Subscription(models.Model):
-    name = models.CharField(max_length=255)
-    price = models.PositiveIntegerField()
-    # price = models.DecimalField(max_digits=6, decimal_places=2)
-
-    duration = models.CharField(max_length=50)
-    stripe_product_id = models.CharField(max_length=255,default="prod_O9kr4qTmAQ036l")
-    is_popular=models.BooleanField(default=False)
-    def __str__(self):
-        return self.name
     
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

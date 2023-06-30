@@ -29,14 +29,34 @@ def search_api(request):
 from django.shortcuts import render
 from django.http import JsonResponse
 
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.db.models import Q
 
 def search_api(request):
     query = request.GET.get("q")
+    subscription = request.GET.get("subscription")
+    license = request.GET.get("license")
+
     softwares = Software.objects.all()
-    
+
     if query:
-        softwares = softwares.filter(tags__name__icontains=query).distinct()
-        # print(softwares)
+        softwares = softwares.filter(Q(name__icontains=query) | Q(tags__name__icontains=query)).distinct()
+
+    if subscription:
+        if subscription == "true":
+            softwares = softwares.filter(
+                Q(subscription__name="Standard") | Q(subscription__name="Premium")
+            ).distinct()
+        elif subscription == "false":
+            softwares = softwares.filter(subscription__name="Free")
+
+
+
+    if license:
+        softwares = softwares.filter(license=license)
+
     paginator = Paginator(softwares, per_page=4)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -64,6 +84,41 @@ def search_api(request):
     }
 
     return JsonResponse(response)
+
+# def search_api(request):
+#     query = request.GET.get("q")
+#     softwares = Software.objects.all()
+    
+#     if query:
+#         softwares = softwares.filter(tags__name__icontains=query).distinct()
+#         # print(softwares)
+#     paginator = Paginator(softwares, per_page=4)
+#     page_number = request.GET.get("page")
+#     page_obj = paginator.get_page(page_number)
+
+#     # Construct the pagination information
+#     pagination = {
+#         "has_previous": page_obj.has_previous(),
+#         "has_next": page_obj.has_next(),
+#         "previous_page_number": page_obj.previous_page_number()
+#         if page_obj.has_previous()
+#         else None,
+#         "next_page_number": page_obj.next_page_number()
+#         if page_obj.has_next()
+#         else None,
+#         "current_page_number": page_obj.number,
+#         "page_range": list(page_obj.paginator.page_range),
+#     }
+
+#     # Construct the JSON response
+#     response = {
+#         "html": render(
+#             request, "software_gallery.html", {"page_obj": page_obj}
+#         ).content.decode("utf-8"),
+#         "pagination": pagination,
+#     }
+
+#     return JsonResponse(response)
 
 from django.db.models import Avg
 from django.shortcuts import render
