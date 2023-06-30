@@ -81,7 +81,9 @@ class Review(models.Model):
 
 class Subscription(models.Model):
     name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.PositiveIntegerField()
+    # price = models.DecimalField(max_digits=6, decimal_places=2)
+
     duration = models.CharField(max_length=50)
     stripe_product_id = models.CharField(max_length=255,default="prod_O9kr4qTmAQ036l")
     is_popular=models.BooleanField(default=False)

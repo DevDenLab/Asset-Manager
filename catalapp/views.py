@@ -161,6 +161,8 @@ def register_view(request):
 @login_required
 def profile_view(request):
     user = request.user
+    # global count
+    # count=0
     return render(request, "profile.html", {"user": user})
 
 
@@ -352,18 +354,19 @@ def webhook(request):
         # Create a new Payment object and save it to the database
     import time
     
-    if user is not None and software is not None and subscription is not None and amount is not None:
+    if user is not None and software is not None and subscription is not None and amount is not None :
         print("payment should be created now!!!")
-        print(user,software)           
-        payment = Payment(
-                    user=user,
-                    software=software,
-                    subscription=subscription,
-                    amount=amount,
-                    is_successful=True
-                )
-        payment.save()
-        return HttpResponse(status=200)
+        print(user,software) 
+        if not Payment.objects.filter(user=user, software=software).exists():
+            payment = Payment(
+                        user=user,
+                        software=software,
+                        subscription=subscription,
+                        amount=amount,
+                        is_successful=True
+                    )
+            payment.save()
+            return HttpResponse(status=200)
 
         # Update user's subscription status, if applicable
             # user.subscription = subscription
@@ -378,7 +381,7 @@ import stripe
 from django.contrib.auth.models import User
 from .models import Software, Subscription
 
-def create_payment_link(user, software,subscription):
+def create_payment_link(user, software,subscription,price):
     stripe.api_key = "sk_test_51NNQNSFQ7fQ9eiOGNU27BidquzSvmBAC4FztWt8jroHqHQ2QyTwCx7BBpjksldu7ZBnxRazcOWCVVcOZExG0Ajvt00rmvFR3A5"
     payment_session = stripe.checkout.Session.create(
         customer="cus_OANDy4jNYPGat0",
@@ -387,7 +390,7 @@ def create_payment_link(user, software,subscription):
             {
                 'price_data': {
                     'currency': 'usd',
-                    'unit_amount': software.price * 100,  # Price in cents
+                    'unit_amount': price * 100,  # Price in cents
                     'product_data': {
                         'name': software.name,
                         # 'images': [software.images.url],
@@ -409,8 +412,8 @@ def create_payment_link(user, software,subscription):
     return payment_session.url
 
 # Example usage when redirecting user to the payment link
-def redirect_to_payment(request, software_id,subscription):
+def redirect_to_payment(request, software_id,subscription,price):
     user = request.user
     software = Software.objects.get(id=software_id)
-    payment_link = create_payment_link(user, software,subscription)
+    payment_link = create_payment_link(user, software,subscription,price)
     return redirect(payment_link)

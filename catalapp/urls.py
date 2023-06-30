@@ -27,7 +27,7 @@ urlpatterns = [
 #     path('subscription/create/', views.create_subscription, name='create_subscription'),
     path('success/', views.success_view, name='success'),
     path('stripe_webhook/', csrf_exempt(views.webhook), name='stripe_webhook'),
-    path('payment/redirect/<int:software_id>/<str:subscription>/', views.redirect_to_payment, name='redirect_to_payment'),
+    path('payment/redirect/<int:software_id>/<str:subscription>/<int:price>/', views.redirect_to_payment, name='redirect_to_payment'),
 #     path('payment/', views.payment_view, name='payment'),
 ]
 #1.there should be a way when user completes the transaction via stripe,it should reflect back to 
