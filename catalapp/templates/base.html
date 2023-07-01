@@ -25,6 +25,14 @@ https://templatemo.com/tm-556-catalog-z
 
 -->
 </head>
+<style>
+    .navbar-nav .dropdown-menu {
+        right: 0;
+        left: auto;
+        min-width: unset;
+        max-width: 200px;
+    }
+</style>
 
 <body>
     <!-- Page Loader -->
@@ -61,13 +69,20 @@ https://templatemo.com/tm-556-catalog-z
                         <a class="nav-link nav-link-4" href="{% url 'catalapp:login' %}">Register/Login</a>
                     </li> -->
                     {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link nav-link-4" href="{% url 'catalapp:profile' %}">Profile</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link nav-link-4" href="{% url 'catalapp:logout' %}">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'catalapp:profile' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'catalapp:logout' %}">Logout</a>
+                        </div>
                     </li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link nav-link-4"
-                            href="{% url 'catalapp:login' %}">Register/Login</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-4" href="{% url 'catalapp:login' %}">Register/Login</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
@@ -130,6 +145,7 @@ https://templatemo.com/tm-556-catalog-z
             $('.navbar-nav .nav-link').each(function () {
                 if (currentUrl === this.href) {
                     $(this).addClass('active');
+                    $(this).parents('.nav-item.dropdown').addClass('active');
                 }
             });
         });

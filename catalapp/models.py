@@ -99,7 +99,7 @@ class Payment(models.Model):
     amount = models.PositiveIntegerField()
     payment_date = models.DateTimeField(auto_now_add=True)
     is_successful = models.BooleanField(default=False)
-
+    remaining_days=models.PositiveIntegerField(default=0)
     def __str__(self):
         return f"{self.user} - {self.software}-{self.subscription}"
 

@@ -212,13 +212,33 @@ def register_view(request):
 
 
 
-
+from django.db.models import Prefetch
+from .models import Subscription
+from datetime import datetime, timedelta,timezone
 @login_required
 def profile_view(request):
     user = request.user
-    # global count
-    # count=0
-    return render(request, "profile.html", {"user": user})
+    payments = Payment.objects.filter(user=user).prefetch_related(
+        Prefetch('software', queryset=Software.objects.all()),
+        Prefetch('subscription', queryset=Subscription.objects.all())
+    )
+    purchased_date = payments[0].payment_date
+    # purchased_date = datetime.strptime(purchased_date_str, '%Y-%m-%d')
+
+# Example free subscription duration in days
+    for payment in payments:
+        purchased_date = payment.payment_date
+        subscription = payment.subscription
+        free_subscription_duration_str = subscription.duration[:2]
+        
+        if free_subscription_duration_str.isdigit():
+            free_subscription_duration = int(free_subscription_duration_str)
+            remaining_days = free_subscription_duration - (datetime.now(timezone.utc) - purchased_date).days
+            payment.remaining_days=remaining_days
+            payment.save()
+        else:
+            remaining_days = None  # Invalid subscri
+    return render(request, "profile.html", {"user": user,'payments': payments})
 
 
 from django.db.models import Count
