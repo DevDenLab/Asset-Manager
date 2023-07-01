@@ -29,7 +29,10 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
+GRAPH_MODELS ={
+'all_applications': True,
+'graph_models': True,
+}
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -38,7 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "catalapp",
-    "softwareAsset"
+    "softwareAsset",
+    "django_extensions"
 ]
 # =======
 #       'django.contrib.staticfiles',

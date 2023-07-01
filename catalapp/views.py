@@ -199,6 +199,7 @@ def login_view(request):
         error_message = ""
     return render(request, "login.html", {"error_message": error_message})
 
+# def request_view(request):
 
 def register_view(request):
     if request.method == "POST":
