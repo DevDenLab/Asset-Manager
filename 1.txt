@@ -1,3 +1,6 @@
 pending,approved,denied
 1.form,requesting software information with user contact info
-2.
+2.create a form with all user info about the new user software erecommendation
+3.save the form
+4.show the progress to the user in profile
+5.create the bootstrap card and show software name and approval stage with many softwars requested and approved button or o=rejection button on the side

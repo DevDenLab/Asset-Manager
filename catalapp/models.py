@@ -105,8 +105,39 @@ class Payment(models.Model):
 
 
 
+from django.db import models
 
+class UserRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    software_name = models.CharField(max_length=255)
+    description = models.TextField()
+    additional_info = models.TextField(blank=True)
+    screenshot = models.ImageField(upload_to="user_request_screenshots/", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_approved = models.BooleanField(default=False)
+    is_under_review = models.BooleanField(default=True)
+    is_rejected=models.BooleanField(default=False)
+    technologies = models.ManyToManyField("Technology")
+    industry_specific = models.ManyToManyField("Industry")
+    techstacks = models.ManyToManyField("TechStackList")
 
+    desired_features = models.TextField(blank=True)
+    def __str__(self):
+        return self.software_name
+class Technology(models.Model):
+    name=models.CharField(max_length=255)
+from django.db import models
+
+class TechStackList(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+class Industry(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 #1.average rating with stars(number stars should be highlighted based upon the average rating).Done
 #2.drop down just beside the average rating.Done
 #3.Drop down menu should show the 5 progress bars out of 100%.You will show the number of 5 stars,4 stars and all stars here.Done

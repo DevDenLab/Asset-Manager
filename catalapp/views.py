@@ -199,8 +199,46 @@ def login_view(request):
         error_message = ""
     return render(request, "login.html", {"error_message": error_message})
 
-# def request_view(request):
+from django.shortcuts import render, redirect
+from .models import UserRequest
+# from .forms import UserRequestForm
 
+
+from django.shortcuts import render, redirect
+from .models import Technology,Industry,TechStackList
+@login_required
+def request_view(request):
+    if request.method == 'POST':
+        software_name = request.POST.get('name')
+        description = request.POST.get('description')
+        industry_id = request.POST.get('industry')
+        technologies = request.POST.getlist('technologies')
+        techstacks = request.POST.getlist('techstacks')
+
+        user_request = UserRequest(
+            user=request.user,
+            software_name=software_name,
+            description=description,
+           
+
+            # Add other fields here
+        )
+        user_request.save()
+        user_request.industry_specific.set([industry_id])
+        technology_objs = Technology.objects.filter(id__in=technologies)
+        user_request.technologies.set(technology_objs)
+        user_request.techstacks.set(techstacks)
+        # user_request.techstacks.set(techstacks)
+        user_requests = UserRequest.objects.all()
+        context = {
+            'user_requests': user_requests
+        }
+        return render(request, 'profile.html', context)  # Replace 'success.html' with your success page template
+    else:
+        technologies = Technology.objects.all()
+        industries=Industry.objects.all()
+        tech_stacks=TechStackList.objects.all()
+        return render(request, 'request.html', {'technologies': technologies,"industries":industries,"tech_stacks":tech_stacks})
 def register_view(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -239,7 +277,11 @@ def profile_view(request):
             payment.save()
         else:
             remaining_days = None  # Invalid subscri
-    return render(request, "profile.html", {"user": user,'payments': payments})
+    user_requests = UserRequest.objects.all()
+ 
+            
+     
+    return render(request, "profile.html", {"user": user,'payments': payments,'user_requests': user_requests})
 
 
 from django.db.models import Count

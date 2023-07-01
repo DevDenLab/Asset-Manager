@@ -15,7 +15,7 @@ urlpatterns = [
     path("api/search/", views.search_api, name="search_api"),
     path("user_auth/", views.authenticate, name="auth"),
     path("login/", views.login_view, name="login"),
-    # path("request/", views.request_view, name="request"),
+    path("request/", views.request_view, name="request"),
 
     path("register/", views.register_view, name="register"),
     path(
